@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  // runApp(const MyApp());
   runApp(const App());
 }
 
+// Main App
 class App extends StatelessWidget {
   const App({super.key});
 
@@ -14,8 +14,28 @@ class App extends StatelessWidget {
       title: 'Sandwich Shop App',
       home: Scaffold(
         appBar: AppBar(title: const Text('Sandwich Counter')),
-        body: const Center(
-          child: OrderItemDisplay(5, 'Footlong'),
+        body: const Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(top: 12.0, left: 12.0, right: 12.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(child: OrderCompactDisplay(3, 'BLT sandwich(es)')),
+                  SizedBox(width: 8),
+                  Expanded(child: OrderCompactDisplay(3, 'Club sandwich(es)')),
+                  SizedBox(width: 8),
+                  Expanded(
+                      child: OrderCompactDisplay(2, 'Veggie sandwich(es)')),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Center(
+                child: OrderItemDisplay(5, 'Footlong'),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -30,40 +50,73 @@ class OrderItemDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text('$quantity $itemType sandwich(es): ${'🥪' * quantity}');
+    return Container(
+      width: 400,
+      height: 200,
+      color: Colors.blue,
+      alignment: Alignment.center,
+      child: Text(
+        '$quantity $itemType sandwich(es): ${List.filled(quantity, '🥪').join()}',
+        style: const TextStyle(color: Colors.black, fontSize: 18),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
   }
 }
 
+// Compact display for top row
+class OrderCompactDisplay extends StatelessWidget {
+  final String itemType;
+  final int quantity;
+
+  const OrderCompactDisplay(this.quantity, this.itemType, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          // Quantity first
+          Text(
+            '$quantity ',
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
+          // Sandwich name and emoji together
+          Expanded(
+            child: Text(
+              '$itemType ${List.filled(quantity, '🥪').join()}',
+              style: const TextStyle(fontSize: 16),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Example leftover template widgets (you can remove if not needed)
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Sandwich Shop App',
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Sandwich Counter')),
-        body: const Center(
-          child: Text('Welcome to the Sandwich Shop!'),
-        ),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
       ),
+      home: const MyHomePage(title: 'My Sandwich Shop'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
 
   @override
@@ -71,32 +124,19 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int _counter = 0;
+
   void _incrementCounter() {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
+      _counter++;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
       body: const Center(
@@ -107,7 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
               'Welcome to my shop!',
               style: TextStyle(
                 fontSize: 24,
-                color: Colors.blueAccent,
+                color: Colors.green,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -118,7 +158,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 }
